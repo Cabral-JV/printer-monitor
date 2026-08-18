@@ -1,0 +1,32 @@
+{% extends "printer_monitor/base.html" %}
+
+{% block title %}Impressoras{% endblock %}
+
+{% block content %}
+    <h2>Impressoras cadastradas</h2>
+
+    {% if printers %}
+        <table border="1" cellpadding="8">
+            <thead>
+                <tr>
+                    <th>Setor</th>
+                    <th>IP</th>
+                    <th>Número de série</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for printer in printers %}
+                <tr>
+                    <td>{{ printer.setor }}</td>
+                    <td>{{ printer.ip }}</td>
+                    <td>{{ printer.numero_serie }}</td>
+                    <td>{{ printer.get_status_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>Nenhuma impressora cadastrada ainda.</p>
+    {% endif %}
+{% endblock %}

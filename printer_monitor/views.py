@@ -1,8 +1,7 @@
-from django.http import HttpResponse
+from django.shortcuts import render
 from .models import Printer
 
 
 def printer_list(request):
     printers = Printer.objects.all()
-    texto = "\n".join(str(p) for p in printers) or "Nenhuma impressora cadastrada ainda."
-    return HttpResponse(texto, content_type="text/plain")
+    return render(request, "printer_monitor/printer_list.html", {"printers": printers})
