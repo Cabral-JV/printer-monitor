@@ -1,0 +1,17 @@
+{% extends "printer_monitor/base.html" %}
+
+{% block title %}{{ printer.setor }}{% endblock %}
+
+{% block content %}
+    <p><a href="{% url 'printer_monitor:printer_list' %}">&larr; Voltar para a lista</a></p>
+
+    <h2>{{ printer.setor }}</h2>
+
+    <ul>
+        <li><strong>IP:</strong> {{ printer.ip }}</li>
+        <li><strong>Número de série:</strong> {{ printer.numero_serie }}</li>
+        <li><strong>Status:</strong> {{ printer.get_status_display }}</li>
+        <li><strong>Nível de toner:</strong> {{ printer.data_remaining|default:"não informado" }}</li>
+        <li><strong>Última atualização:</strong> {{ printer.ultima_atualizacao }}</li>
+    </ul>
+{% endblock %}

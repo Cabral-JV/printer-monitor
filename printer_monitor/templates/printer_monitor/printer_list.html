@@ -18,7 +18,7 @@
             <tbody>
                 {% for printer in printers %}
                 <tr>
-                    <td>{{ printer.setor }}</td>
+                    <td><a href="{% url 'printer_monitor:printer_detail' printer.pk %}">{{ printer.setor }}</a></td>
                     <td>{{ printer.ip }}</td>
                     <td>{{ printer.numero_serie }}</td>
                     <td>{{ printer.get_status_display }}</td>
