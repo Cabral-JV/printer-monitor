@@ -10,8 +10,21 @@ from .forms import CustomUserCreationForm, CustomUserChangeForm
 
 
 def printer_list(request):
-    printers = Printer.objects.all()
-    return render(request, "printer_monitor/printer_list.html", {"printers": printers})
+    sort_by = request.GET.get("sort_by", "setor")
+    sort_order = request.GET.get("sort_order", "asc")
+
+    campos_permitidos = ["setor", "data_remaining"]
+    if sort_by not in campos_permitidos:
+        sort_by = "setor"
+
+    ordering = sort_by if sort_order == "asc" else f"-{sort_by}"
+    printers = Printer.objects.all().order_by(ordering)
+
+    return render(request, "printer_monitor/printer_list.html", {
+        "printers": printers,
+        "sort_by": sort_by,
+        "sort_order": sort_order,
+    })
 
 
 def printer_detail(request, pk):
