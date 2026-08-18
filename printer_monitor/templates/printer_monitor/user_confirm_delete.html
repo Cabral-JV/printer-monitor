@@ -1,0 +1,16 @@
+{% extends "printer_monitor/base.html" %}
+
+{% block title %}Excluir usuário{% endblock %}
+
+{% block content %}
+    <h2>Excluir usuário</h2>
+
+    <p>Tem certeza que deseja excluir o usuário <strong>{{ user_obj.username }}</strong>?</p>
+    <p>Essa ação não pode ser desfeita.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirmar exclusão</button>
+        <a href="{% url 'printer_monitor:user_list' %}">Cancelar</a>
+    </form>
+{% endblock %}

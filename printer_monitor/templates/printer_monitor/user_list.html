@@ -1,0 +1,37 @@
+{% extends "printer_monitor/base.html" %}
+
+{% block title %}Usuários{% endblock %}
+
+{% block content %}
+    <h2>Usuários do sistema</h2>
+
+    <p><a href="{% url 'printer_monitor:user_create' %}">+ Novo usuário</a></p>
+
+    <table border="1" cellpadding="8">
+        <thead>
+            <tr>
+                <th>Usuário</th>
+                <th>E-mail</th>
+                <th>Superusuário</th>
+                <th>Ativo</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user_obj in users %}
+            <tr>
+                <td>{{ user_obj.username }}</td>
+                <td>{{ user_obj.email }}</td>
+                <td>{% if user_obj.is_superuser %}Sim{% else %}Não{% endif %}</td>
+                <td>{% if user_obj.is_active %}Sim{% else %}Não{% endif %}</td>
+                <td>
+                    <a href="{% url 'printer_monitor:user_update' user_obj.pk %}">Editar</a>
+                    {% if user_obj != request.user %}
+                        | <a href="{% url 'printer_monitor:user_delete' user_obj.pk %}">Excluir</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

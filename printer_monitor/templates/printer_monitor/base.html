@@ -10,6 +10,9 @@
         <nav>
             {% if user.is_authenticated %}
                 <span>Logado como {{ user.username }}</span>
+                {% if user.is_superuser %}
+                    <a href="{% url 'printer_monitor:user_list' %}">Usuários</a>
+                {% endif %}
                 <form method="post" action="{% url 'logout' %}" style="display:inline;">
                     {% csrf_token %}
                     <button type="submit">Sair</button>
