@@ -96,11 +96,13 @@ def user_update(request, pk):
     if request.method == "POST":
         form = CustomUserChangeForm(request.POST, instance=user_obj)
         if form.is_valid():
-            # Impede que o único superusuário remova o próprio acesso
-            if user_obj == request.user and not form.cleaned_data.get("is_superuser"):
-                messages.error(
-                    request, "Você não pode remover seu próprio acesso de superusuário."
-                )
+            # Impede que o usuário remova o próprio acesso, seja tirando
+            # o status de superusuário, seja desativando a própria conta
+            perdendo_superuser = user_obj == request.user and not form.cleaned_data.get("is_superuser")
+            perdendo_acesso = user_obj == request.user and not form.cleaned_data.get("is_active")
+
+            if perdendo_superuser or perdendo_acesso:
+                messages.error(request, "Você não pode remover seu próprio acesso administrativo.")
                 return redirect("printer_monitor:user_list")
 
             form.save()
@@ -109,9 +111,7 @@ def user_update(request, pk):
     else:
         form = CustomUserChangeForm(instance=user_obj)
 
-    return render(
-        request, "printer_monitor/user_form.html", {"form": form, "user_obj": user_obj}
-    )
+    return render(request, "printer_monitor/user_form.html", {"form": form, "user_obj": user_obj})
 
 
 @login_required
