@@ -37,3 +37,13 @@ def printer_update(request, pk):
         form = PrinterForm(instance=printer)
 
     return render(request, "printer_monitor/printer_form.html", {"form": form, "printer": printer})
+
+
+def printer_delete(request, pk):
+    printer = get_object_or_404(Printer, pk=pk)
+
+    if request.method == "POST":
+        printer.delete()
+        return redirect("printer_monitor:printer_list")
+
+    return render(request, "printer_monitor/printer_confirm_delete.html", {"printer": printer})
