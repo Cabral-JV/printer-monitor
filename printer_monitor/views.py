@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.contrib import messages
 from django.core.exceptions import ValidationError
 from .forms import CustomUserCreationForm, CustomUserChangeForm
+from django.views.decorators.http import require_POST
 
 
 def printer_list(request):
@@ -20,11 +21,16 @@ def printer_list(request):
     ordering = sort_by if sort_order == "asc" else f"-{sort_by}"
     printers = Printer.objects.all().order_by(ordering)
 
-    return render(request, "printer_monitor/printer_list.html", {
-        "printers": printers,
-        "sort_by": sort_by,
-        "sort_order": sort_order,
-    })
+    return render(
+        request,
+        "printer_monitor/printer_list.html",
+        {
+            "printers": printers,
+            "sort_by": sort_by,
+            "sort_order": sort_order,
+            "create_form": PrinterForm(),
+        },
+    )
 
 
 def printer_detail(request, pk):
@@ -33,46 +39,41 @@ def printer_detail(request, pk):
 
 
 @login_required
+@require_POST
 def printer_create(request):
-    if request.method == "POST":
-        form = PrinterForm(request.POST)
-        if form.is_valid():
-            printer = form.save()
-            return redirect("printer_monitor:printer_detail", pk=printer.pk)
+    form = PrinterForm(request.POST)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Impressora criada com sucesso.")
     else:
-        form = PrinterForm()
-
-    return render(request, "printer_monitor/printer_form.html", {"form": form})
+        messages.error(
+            request, "Erro ao criar impressora. Verifique os dados informados."
+        )
+    return redirect("printer_monitor:printer_list")
 
 
 @login_required
+@require_POST
 def printer_update(request, pk):
     printer = get_object_or_404(Printer, pk=pk)
-
-    if request.method == "POST":
-        form = PrinterForm(request.POST, instance=printer)
-        if form.is_valid():
-            form.save()
-            return redirect("printer_monitor:printer_detail", pk=printer.pk)
+    form = PrinterForm(request.POST, instance=printer)
+    if form.is_valid():
+        form.save()
+        messages.success(request, "Impressora atualizada com sucesso.")
     else:
-        form = PrinterForm(instance=printer)
-
-    return render(
-        request, "printer_monitor/printer_form.html", {"form": form, "printer": printer}
-    )
+        messages.error(
+            request, "Erro ao atualizar impressora. Verifique os dados informados."
+        )
+    return redirect("printer_monitor:printer_list")
 
 
 @login_required
+@require_POST
 def printer_delete(request, pk):
     printer = get_object_or_404(Printer, pk=pk)
-
-    if request.method == "POST":
-        printer.delete()
-        return redirect("printer_monitor:printer_list")
-
-    return render(
-        request, "printer_monitor/printer_confirm_delete.html", {"printer": printer}
-    )
+    printer.delete()
+    messages.success(request, "Impressora excluída com sucesso.")
+    return redirect("printer_monitor:printer_list")
 
 
 def is_superuser(user):
@@ -111,11 +112,17 @@ def user_update(request, pk):
         if form.is_valid():
             # Impede que o usuário remova o próprio acesso, seja tirando
             # o status de superusuário, seja desativando a própria conta
-            perdendo_superuser = user_obj == request.user and not form.cleaned_data.get("is_superuser")
-            perdendo_acesso = user_obj == request.user and not form.cleaned_data.get("is_active")
+            perdendo_superuser = user_obj == request.user and not form.cleaned_data.get(
+                "is_superuser"
+            )
+            perdendo_acesso = user_obj == request.user and not form.cleaned_data.get(
+                "is_active"
+            )
 
             if perdendo_superuser or perdendo_acesso:
-                messages.error(request, "Você não pode remover seu próprio acesso administrativo.")
+                messages.error(
+                    request, "Você não pode remover seu próprio acesso administrativo."
+                )
                 return redirect("printer_monitor:user_list")
 
             form.save()
@@ -124,7 +131,9 @@ def user_update(request, pk):
     else:
         form = CustomUserChangeForm(instance=user_obj)
 
-    return render(request, "printer_monitor/user_form.html", {"form": form, "user_obj": user_obj})
+    return render(
+        request, "printer_monitor/user_form.html", {"form": form, "user_obj": user_obj}
+    )
 
 
 @login_required

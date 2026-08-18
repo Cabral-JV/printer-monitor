@@ -16,8 +16,7 @@
     </ul>
     {% if user.is_authenticated %}
         <p>
-            <a href="{% url 'printer_monitor:printer_update' printer.pk %}">Editar</a>
-            | <a href="{% url 'printer_monitor:printer_delete' printer.pk %}">Excluir</a>
+            <a href="{% url 'printer_monitor:printer_delete' printer.pk %}">Excluir</a>
         </p>
     {% endif %}
 {% endblock %}
