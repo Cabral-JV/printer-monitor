@@ -1,0 +1,7 @@
+/* Estilos customizados do Printer Monitor */
+
+:root {
+    --pm-primary: #0d6efd;
+    --pm-success: #198754;
+    --pm-danger: #dc3545;
+}
