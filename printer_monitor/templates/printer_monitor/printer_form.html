@@ -1,0 +1,13 @@
+{% extends "printer_monitor/base.html" %}
+
+{% block title %}{% if printer %}Editar impressora{% else %}Nova impressora{% endif %}{% endblock %}
+
+{% block content %}
+    <h2>{% if printer %}Editar impressora{% else %}Nova impressora{% endif %}</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+{% endblock %}

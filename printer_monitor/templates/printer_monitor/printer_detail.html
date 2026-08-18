@@ -14,4 +14,5 @@
         <li><strong>Nível de toner:</strong> {{ printer.data_remaining|default:"não informado" }}</li>
         <li><strong>Última atualização:</strong> {{ printer.ultima_atualizacao }}</li>
     </ul>
+    <p><a href="{% url 'printer_monitor:printer_update' printer.pk %}">Editar</a></p>
 {% endblock %}
