@@ -11,7 +11,7 @@
         <li><strong>IP:</strong> {{ printer.ip }}</li>
         <li><strong>Número de série:</strong> {{ printer.numero_serie }}</li>
         <li><strong>Status:</strong> {{ printer.get_status_display }}</li>
-        <li><strong>Nível de toner:</strong> {{ printer.data_remaining|default:"não informado" }}</li>
+        <li><strong>Nível de toner:</strong> {{ printer.nivel_toner }}%</li>
         <li><strong>Última atualização:</strong> {{ printer.ultima_atualizacao }}</li>
     </ul>
     {% if user.is_authenticated %}

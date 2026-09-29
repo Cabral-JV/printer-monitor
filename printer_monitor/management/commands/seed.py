@@ -3,7 +3,6 @@ import random
 from django.core.management.base import BaseCommand
 from printer_monitor.models import Printer
 
-
 SETORES = [
     "Biblioteca",
     "Secretaria Academica",
@@ -31,7 +30,9 @@ class Command(BaseCommand):
         quantidade = options["quantidade"]
 
         if quantidade > 254:
-            self.stderr.write("Maximo de 254 impressoras (limite da faixa de IP de exemplo).")
+            self.stderr.write(
+                "Maximo de 254 impressoras (limite da faixa de IP de exemplo)."
+            )
             return
 
         criadas = 0
@@ -47,7 +48,7 @@ class Command(BaseCommand):
                     "ip": ip,
                     "setor": setor,
                     "status": Printer.STATUS_OK,
-                    "data_remaining": f"{random.randint(5, 100)}%",
+                    "nivel_toner": random.randint(5, 100),
                 },
             )
 
@@ -55,5 +56,7 @@ class Command(BaseCommand):
                 criadas += 1
 
         self.stdout.write(
-            self.style.SUCCESS(f"{criadas} impressora(s) ficticia(s) criada(s) com sucesso.")
+            self.style.SUCCESS(
+                f"{criadas} impressora(s) ficticia(s) criada(s) com sucesso."
+            )
         )

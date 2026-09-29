@@ -14,7 +14,7 @@ def printer_list(request):
     sort_by = request.GET.get("sort_by", "setor")
     sort_order = request.GET.get("sort_order", "asc")
 
-    campos_permitidos = ["setor", "data_remaining"]
+    campos_permitidos = ["setor", "nivel_toner"]
     if sort_by not in campos_permitidos:
         sort_by = "setor"
 

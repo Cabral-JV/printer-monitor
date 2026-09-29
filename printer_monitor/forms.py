@@ -7,13 +7,12 @@ from django.contrib.auth.models import User
 class PrinterForm(forms.ModelForm):
     class Meta:
         model = Printer
-        fields = ["setor", "ip", "numero_serie", "status", "data_remaining"]
+        fields = ["setor", "ip", "numero_serie", "status"]
         widgets = {
             "setor": forms.TextInput(attrs={"class": "form-control"}),
             "ip": forms.TextInput(attrs={"class": "form-control"}),
             "numero_serie": forms.TextInput(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-select"}),
-            "data_remaining": forms.TextInput(attrs={"class": "form-control"}),
         }
 
 

@@ -34,8 +34,8 @@
                         <th>
                             <a
                                 class="text-white text-decoration-none"
-                                href="?sort_by=data_remaining&sort_order={% if sort_by == 'data_remaining' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
-                                Toner {% if sort_by == "data_remaining" %}
+                                href="?sort_by=nivel_toner&sort_order={% if sort_by == 'nivel_toner' and sort_order == 'asc' %}desc{% else %}asc{% endif %}">
+                                Toner {% if sort_by == "nivel_toner" %}
                                 <i class="fas fa-sort-{% if sort_order == 'asc' %}up{% else %}down{% endif %}"></i>
                                 {% endif %}
                             </a>
@@ -54,11 +54,7 @@
                         </td>
                         <td><code>{{ printer.ip }}</code></td>
                         <td>{{ printer.numero_serie }}</td>
-                        <td>
-                            {% if printer.data_remaining %} {{ printer.data_remaining }} {% else %}
-                            <span class="text-muted">&mdash;</span>
-                            {% endif %}
-                        </td>
+                        <td>{{ printer.nivel_toner }}%</td>
                         <td>
                             {% if printer.status == "OK" %}
                             <span class="badge bg-success"><i class="fas fa-circle-check me-1"></i>OK</span>
