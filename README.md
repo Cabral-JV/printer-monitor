@@ -18,6 +18,8 @@ O Printer Monitor permite:
 - Python / Django
 - PostgreSQL
 - Docker e Docker Compose
+- Bootstrap 5 + Font Awesome
+- APScheduler (agendamento automático)
 
 ## Como rodar o projeto
 
@@ -103,3 +105,7 @@ printer-monitor/
 - [x] Model e migrations
 - [x] Views, URLs e templates (CRUD completo)
 - [x] Seed com dados fictícios
+- [x] Autenticação (login/logout)
+- [x] Gestão de usuários
+- [x] Agendamento automático
+- [x] Interface visual com Bootstrap

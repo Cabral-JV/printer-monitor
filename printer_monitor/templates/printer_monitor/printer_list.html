@@ -74,14 +74,16 @@
                                 type="button"
                                 class="btn btn-warning btn-sm"
                                 data-bs-toggle="modal"
-                                data-bs-target="#editPrinterModal{{ printer.pk }}">
+                                data-bs-target="#editPrinterModal{{ printer.pk }}"
+                                aria-label="Editar impressora">
                                 <i class="fas fa-edit"></i>
                             </button>
                             <button
                                 type="button"
                                 class="btn btn-danger btn-sm"
                                 data-bs-toggle="modal"
-                                data-bs-target="#deletePrinterModal{{ printer.pk }}">
+                                data-bs-target="#deletePrinterModal{{ printer.pk }}"
+                                aria-label="Excluir impressora">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                             {% endif %}
