@@ -31,6 +31,30 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto align-items-lg-center">
                             {% if user.is_authenticated %} {% if user.is_superuser %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link" href="#" id="notificacoesDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <span class="position-relative d-inline-block">
+                                        <i class="fas fa-bell"></i>
+                                        {% if total_notificacoes > 0 %}
+                                        <span
+                                            class="position-absolute top-100 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center pm-notification-badge">
+                                            {{ total_notificacoes }}
+                                        </span>
+                                        {% endif %}
+                                    </span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificacoesDropdown" style="min-width: 300px">
+                                    {% if notificacoes_toner %} {% for notificacao in notificacoes_toner %}
+                                    <li>
+                                        <span class="dropdown-item-text text-{{ notificacao.nivel }}">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>{{ notificacao.texto }}
+                                        </span>
+                                    </li>
+                                    {% endfor %} {% else %}
+                                    <li><span class="dropdown-item-text text-muted">Nenhum alerta no momento.</span></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="{% url 'printer_monitor:user_list' %}">
                                     <i class="fas fa-users me-1"></i>Usuários
