@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.core.validators import MinValueValidator, MaxValueValidator
+from .scraping import simular_consumo_toner
 
 
 class Printer(models.Model):
@@ -27,3 +28,10 @@ class Printer(models.Model):
 
     def __str__(self):
         return f"{self.setor} ({self.ip})"
+
+    def update_toner_data(self):
+        consumo = simular_consumo_toner()
+        self.nivel_toner = max(self.nivel_toner - consumo, 0)
+        self.status = self.STATUS_OK
+        self.ultima_atualizacao = timezone.now()
+        self.save()
