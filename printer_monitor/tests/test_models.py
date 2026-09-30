@@ -31,3 +31,17 @@ class PrinterModelTest(TestCase):
 
     def test_str_retorna_setor_e_ip(self):
         self.assertEqual(str(self.printer), "Setor de Teste (192.0.2.1)")
+
+
+def test_toner_reseta_para_100_quando_chega_a_zero(self):
+    self.printer.nivel_toner = 0
+    self.printer.save()
+
+    self.printer.update_toner_data()
+
+    self.assertEqual(self.printer.nivel_toner, 100)
+    self.assertTrue(self.printer.toner_recem_trocado)
+
+
+def test_toner_recem_trocado_comeca_false(self):
+    self.assertFalse(self.printer.toner_recem_trocado)

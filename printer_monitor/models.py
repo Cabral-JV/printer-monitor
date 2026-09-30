@@ -21,6 +21,7 @@ class Printer(models.Model):
         default=100,
         validators=[MinValueValidator(0), MaxValueValidator(100)],
     )
+    toner_recem_trocado = models.BooleanField(default=False)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_OK)
 
     class Meta:
@@ -30,8 +31,13 @@ class Printer(models.Model):
         return f"{self.setor} ({self.ip})"
 
     def update_toner_data(self):
-        consumo = simular_consumo_toner()
-        self.nivel_toner = max(self.nivel_toner - consumo, 0)
+        if self.nivel_toner == 0:
+            self.nivel_toner = 100
+            self.toner_recem_trocado = True
+        else:
+            consumo = simular_consumo_toner()
+            self.nivel_toner = max(self.nivel_toner - consumo, 0)
+
         self.status = self.STATUS_OK
         self.ultima_atualizacao = timezone.now()
         self.save()
