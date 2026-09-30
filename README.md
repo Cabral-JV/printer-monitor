@@ -1,6 +1,6 @@
 # Printer Monitor
 
-Aplicação Django para monitorar o nível de toner e status de impressoras em rede.
+Aplicação Django para gerenciar impressoras e acompanhar o nível de toner e o status de cada equipamento, com dados simulados para demonstração.
 
 ## Sobre o projeto
 
@@ -9,13 +9,14 @@ O Printer Monitor permite:
 - Cadastrar impressoras (número de série, IP, setor)
 - Consultar o nível de toner remanescente de cada impressora
 - Editar e excluir impressoras cadastradas
+- Autenticar usuários e gerenciar suas contas com acesso de superusuário
 - Popular o banco com dados fictícios para demonstração, através de um comando customizado (`seed`)
 - Receber alertas visuais (sino na navbar) quando o toner de alguma impressora estiver baixo, crítico ou esgotado
 - Simular consumo de toner automaticamente ao longo do tempo, através de um agendador em segundo plano
 
 > ⚠️ Todos os dados de exemplo usados neste repositório (IPs, números de série, setores) são **fictícios**. Os IPs pertencem a faixas reservadas pela IANA para documentação (RFC 5737) e nunca correspondem a endereços reais.
 >
-> ℹ️ O nível de toner de cada impressora é simulado: um agendador em segundo plano reduz o valor automaticamente a cada poucos minutos, simulando o desgaste de um cartucho real ao longo do tempo. Não há requisição de rede real às impressoras.
+> ℹ️ O nível de toner de cada impressora é simulado: um agendador em segundo plano reduz o valor automaticamente a cada 15 minutos, simulando o desgaste de um cartucho real ao longo do tempo. Não há requisição de rede real às impressoras.
 
 ## Tecnologias
 
@@ -60,7 +61,7 @@ O Printer Monitor permite:
    docker compose exec web python manage.py migrate
    ```
 
-1. (Opcional) Crie um superusuário para acessar o painel administrativo:
+1. Crie um superusuário para gerenciar usuários e acessar o painel administrativo:
 
    ```bash
    docker compose exec web python manage.py createsuperuser
@@ -72,7 +73,7 @@ O Printer Monitor permite:
    docker compose exec web python manage.py seed
    ```
 
-1. Acesse a aplicação em [http://localhost:8000](http://localhost:8000). O painel administrativo fica disponível em [http://localhost:8000/admin](http://localhost:8000/admin).
+1. Acesse a aplicação em [http://localhost:8000](http://localhost:8000). A listagem de impressoras é pública; para cadastrar, editar ou excluir impressoras, entre com o usuário criado. O painel administrativo fica disponível em [http://localhost:8000/admin](http://localhost:8000/admin).
 
 ### Comandos úteis
 
@@ -83,22 +84,68 @@ O Printer Monitor permite:
 | `docker compose logs -f web` | Acompanha os logs do container Django em tempo real |
 | `docker compose exec web python manage.py <comando>` | Roda qualquer comando do Django dentro do container |
 
+## Rodando os testes
+
+Com os containers em execução e o banco configurado, execute a suíte de testes:
+
+```bash
+docker compose exec web python manage.py test
+```
+
+Os testes abrangem o modelo de impressora, autenticação, operações de cadastro, edição e exclusão de impressoras e proteções na gestão de usuários.
+
+Para executar apenas os testes do modelo de impressora (`test_models.py`), informe o caminho do módulo no comando:
+
+```bash
+docker compose exec web python manage.py test printer_monitor.tests.test_models
+```
+
+Para testar outra parte da aplicação, substitua `test_models` por um dos módulos abaixo, mantendo o prefixo `printer_monitor.tests.`:
+
+| Módulo | O que testa |
+| --- | --- |
+| `test_auth` | Login e permissões de acesso |
+| `test_printer_crud` | Cadastro, edição e exclusão de impressoras |
+| `test_user_crud` | Proteções na gestão de usuários |
+
 ## Estrutura do projeto
 
 ```text
 printer-monitor/
-├── printer_monitor_project/ # Configurações do projeto (settings, urls raiz)
-├── printer_monitor/ # App principal
-│ ├── management/commands/ # Comando customizado "seed"
-│ ├── migrations/ # Histórico do esquema do banco
-│ ├── templates/ # Templates HTML
-│ ├── models.py # Model Printer
-│ ├── views.py # Views (CRUD de impressoras)
-│ ├── forms.py # Formulário de cadastro/edição
-│ └── urls.py # Rotas do app
-├── Dockerfile
-├── docker-compose.yml
-└── requirements.txt
+├── printer_monitor_project/       # Configuração global do Django
+│   ├── settings.py               # Banco, autenticação, templates e apps
+│   ├── urls.py                   # Rotas principais
+│   ├── asgi.py                   # Entrada ASGI
+│   └── wsgi.py                   # Entrada WSGI
+├── printer_monitor/              # Aplicação principal
+│   ├── management/commands/
+│   │   └── seed.py               # Geração de impressoras fictícias
+│   ├── migrations/               # Histórico do esquema do banco
+│   ├── static/printer_monitor/css/
+│   │   └── style.css             # Estilos da interface
+│   ├── templates/
+│   │   ├── printer_monitor/      # Layout e telas de impressoras e usuários
+│   │   │   └── partials/         # Modais de impressoras
+│   │   └── registration/         # Tela de login
+│   ├── tests/
+│   │   ├── test_auth.py          # Login e permissões de acesso
+│   │   ├── test_models.py        # Modelo e consumo de toner
+│   │   ├── test_printer_crud.py  # Cadastro, edição e exclusão de impressoras
+│   │   └── test_user_crud.py     # Proteções na gestão de usuários
+│   ├── admin.py                  # Integração com o painel administrativo
+│   ├── apps.py                   # Configuração do app e início do agendador
+│   ├── context_processors.py     # Alertas de toner nos templates
+│   ├── forms.py                  # Formulários de impressoras e usuários
+│   ├── models.py                 # Modelo Printer
+│   ├── scheduler.py              # Agendamento da atualização de toner
+│   ├── scraping.py               # Simulação de consumo de toner
+│   ├── urls.py                   # Rotas da aplicação
+│   └── views.py                  # Telas e operações de impressoras e usuários
+├── .env.example                  # Exemplo de variáveis de ambiente
+├── Dockerfile                    # Imagem da aplicação
+├── docker-compose.yml            # Serviços da aplicação e PostgreSQL
+├── manage.py                     # Comandos de gerenciamento do Django
+└── requirements.txt              # Dependências Python
 ```
 
 ## Status do desenvolvimento
@@ -114,4 +161,4 @@ printer-monitor/
 - [x] Agendamento automático com simulação de consumo de toner
 - [x] Sistema de notificações (alertas de toner na navbar)
 - [x] Interface visual com Bootstrap
-- [ ] Testes automatizados
+- [x] Testes automatizados
