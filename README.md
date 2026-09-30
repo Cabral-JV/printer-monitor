@@ -10,8 +10,12 @@ O Printer Monitor permite:
 - Consultar o nível de toner remanescente de cada impressora
 - Editar e excluir impressoras cadastradas
 - Popular o banco com dados fictícios para demonstração, através de um comando customizado (`seed`)
+- Receber alertas visuais (sino na navbar) quando o toner de alguma impressora estiver baixo, crítico ou esgotado
+- Simular consumo de toner automaticamente ao longo do tempo, através de um agendador em segundo plano
 
 > ⚠️ Todos os dados de exemplo usados neste repositório (IPs, números de série, setores) são **fictícios**. Os IPs pertencem a faixas reservadas pela IANA para documentação (RFC 5737) e nunca correspondem a endereços reais.
+>
+> ℹ️ O nível de toner de cada impressora é simulado: um agendador em segundo plano reduz o valor automaticamente a cada poucos minutos, simulando o desgaste de um cartucho real ao longo do tempo. Não há requisição de rede real às impressoras.
 
 ## Tecnologias
 
@@ -107,5 +111,7 @@ printer-monitor/
 - [x] Seed com dados fictícios
 - [x] Autenticação (login/logout)
 - [x] Gestão de usuários
-- [x] Agendamento automático
+- [x] Agendamento automático com simulação de consumo de toner
+- [x] Sistema de notificações (alertas de toner na navbar)
 - [x] Interface visual com Bootstrap
+- [ ] Testes automatizados
