@@ -16,7 +16,7 @@ def iniciar_scheduler():
     scheduler = BackgroundScheduler()
     scheduler.add_job(
         atualizar_impressoras_agendado,
-        trigger=IntervalTrigger(minutes=15),
+        trigger=IntervalTrigger(minutes=2),
         id="atualizar_impressoras_job",
         name="Simulacao de consumo de toner",
         replace_existing=True,

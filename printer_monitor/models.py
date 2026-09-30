@@ -37,6 +37,7 @@ class Printer(models.Model):
         else:
             consumo = simular_consumo_toner()
             self.nivel_toner = max(self.nivel_toner - consumo, 0)
+            self.toner_recem_trocado = False
 
         self.status = self.STATUS_OK
         self.ultima_atualizacao = timezone.now()

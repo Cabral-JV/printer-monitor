@@ -5,27 +5,28 @@ LIMITE_CRITICO = 5
 
 
 def notificacoes_toner(request):
-    """Disponibiliza a lista de alertas de toner em todos os templates,
-    sem precisar que cada view passe isso manualmente no contexto."""
-
     if not request.user.is_authenticated:
         return {}
 
-    impressoras_baixas = Printer.objects.filter(nivel_toner__lt=LIMITE_BAIXO).order_by(
-        "nivel_toner"
-    )
-
     notificacoes = []
+
+    for impressora in Printer.objects.filter(toner_recem_trocado=True):
+        notificacoes.append({
+            "nivel": "success",
+            "texto": f"{impressora.setor}: toner trocado, nível restaurado para 100%",
+        })
+
+    impressoras_baixas = Printer.objects.filter(
+        nivel_toner__lt=LIMITE_BAIXO, toner_recem_trocado=False
+    ).order_by("nivel_toner")
+
     for impressora in impressoras_baixas:
         if impressora.nivel_toner == 0:
-            nivel = "danger"
-            texto = f"{impressora.setor}: toner esgotado, é necessário trocar"
+            nivel, texto = "danger", f"{impressora.setor}: toner esgotado, é necessário trocar"
         elif impressora.nivel_toner < LIMITE_CRITICO:
-            nivel = "danger"
-            texto = f"{impressora.setor}: toner crítico ({impressora.nivel_toner}%)"
+            nivel, texto = "danger", f"{impressora.setor}: toner crítico ({impressora.nivel_toner}%)"
         else:
-            nivel = "warning"
-            texto = f"{impressora.setor}: toner baixo ({impressora.nivel_toner}%)"
+            nivel, texto = "warning", f"{impressora.setor}: toner baixo ({impressora.nivel_toner}%)"
 
         notificacoes.append({"nivel": nivel, "texto": texto})
 

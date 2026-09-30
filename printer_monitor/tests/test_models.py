@@ -43,5 +43,16 @@ def test_toner_reseta_para_100_quando_chega_a_zero(self):
     self.assertTrue(self.printer.toner_recem_trocado)
 
 
+def test_notificacao_de_troca_expira_no_ciclo_seguinte(self):
+    self.printer.nivel_toner = 0
+    self.printer.save()
+
+    self.printer.update_toner_data()  # 1º ciclo: reseta e liga a notificacao
+    self.assertTrue(self.printer.toner_recem_trocado)
+
+    self.printer.update_toner_data()  # 2º ciclo: consome normalmente
+    self.assertFalse(self.printer.toner_recem_trocado)
+
+
 def test_toner_recem_trocado_comeca_false(self):
     self.assertFalse(self.printer.toner_recem_trocado)
